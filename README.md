@@ -9,7 +9,10 @@ add to PAYMENT_VARIANTS_API:
 PAYMENT_VARIANTS_API = {
     ...
     'coinbase': ('web_payments_coinbase.CoinbaseProvider', {
-      
+      "key": "<key>",
+      "secret": "<secret>",
+      "endpoint": 'sandbox.coinbase.com',
+      }
     )
   }
 ```
