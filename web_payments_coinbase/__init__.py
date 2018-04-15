@@ -8,20 +8,23 @@ import time
 import requests
 
 from web_payments.logic import BasicProvider
+from web_payments.forms import PaymentForm
 from web_payments import PaymentStatus, NotSupported
 
+class CoinbasePaymentForm(PaymentForm):
+    method = 'get'
 
 class CoinbaseProvider(BasicProvider):
 
-    _method = 'get'
     api_url = 'https://api.%(endpoint)s/v1/buttons'
     checkout_url = 'https://%(endpoint)s/checkouts'
+    form_class = CoinbasePaymentForm
 
-    def __init__(self, key, secret, endpoint='sandbox.coinbase.com' *args, **kwargs):
+    def __init__(self, key, secret, endpoint='sandbox.coinbase.com', **kwargs):
         self.key = key
         self.secret = secret
         self.endpoint = endpoint
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         if not self._capture:
             raise NotSupported(
                 'Coinbase does not support pre-authorization.')
@@ -36,7 +39,7 @@ class CoinbaseProvider(BasicProvider):
             'name': payment.description,
             'price_string': str(payment.total),
             'price_currency_iso': payment.currency,
-            'callback_url': self.get_return_url(payment),
+            'callback_url': payment.get_process_url(),
             'success_url': payment.get_success_url(),
             'cancel_url': payment.get_failure_url(),
             'custom': self.get_custom_token(payment)}
@@ -61,9 +64,6 @@ class CoinbaseProvider(BasicProvider):
     def get_action(self, payment):
         checkout_url = self.checkout_url % {'endpoint': self.endpoint}
         return '%s/%s' % (checkout_url, self.get_checkout_code(payment))
-
-    def get_hidden_fields(self, payment):
-        return {}
 
     def process_data(self, payment, request):
         try:

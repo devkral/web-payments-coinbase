@@ -37,8 +37,7 @@ class TestCoinbaseProvider(TestCase):
         """
         request = MagicMock()
         request.body = json.dumps(COINBASE_REQUEST)
-        response = self.provider.process_data(self.payment, request)
-        self.assertEqual(type(response), HttpResponse)
+        self.assertTrue(self.provider.process_data(self.payment, request))
         self.assertEqual(self.payment.status, PaymentStatus.CONFIRMED)
 
     def test_incorrect_custom_token_process_data(self):
