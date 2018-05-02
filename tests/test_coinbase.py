@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import hashlib
 import json
 from decimal import Decimal
@@ -9,7 +7,7 @@ from unittest.mock import patch, MagicMock
 from web_payments import PaymentStatus
 from web_payments.testcommon import create_test_payment
 
-from . import CoinbaseProvider
+from web_payments_coinbase import CoinbaseProvider
 
 PAYMENT_TOKEN = '5a4dae68-2715-4b1e-8bb2-2c2dbe9255f6'
 KEY = 'abc123'
